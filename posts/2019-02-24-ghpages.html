@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Haskell India Blog - Using Hakyll with Github</title>
+        <link rel="stylesheet" href="../css/default.css" />
+    </head>
+    <body>
+        <header>
+            <div class="logo">
+                <a href="../">Haskell India Blog</a>
+            </div>
+            <nav>
+                <a href="../">Home</a>
+                <a href="../about.html">About</a>
+                <a href="../contact.html">Contact</a>
+                <a href="../archive.html">Archive</a>
+            </nav>
+        </header>
+
+        <main role="main">
+            <h1>Using Hakyll with Github</h1>
+            <article>
+    <section class="header">
+        Posted on February 24, 2019
+        
+            by Arvind Devarajan
+        
+    </section>
+    <section>
+        <h1 id="premise">Premise</h1>
+<p>Using github pages for blogs gives an interesting perspective: not only is that collaborative in nature (but not the only way), but also that it allows keeping your documentation / wiki along with your source code.</p>
+<p>And, this is what that makes github pages different from, lets say, wiki: with sufficiently developed tools (for example, integrating document generating tools such as <a href="http://www.doxygen.nl/" title="Doxygen">doxygen</a>, <a href="https://github.com/EWSoftware/SHFB" title="Sandcastle">sandcastle</a>, etc.), there is also a possibility to use your blog as an upto-date synced documentation of your source code. This is possible because the blog is a part of your repo, and source-code documentation can be generated, say, during your continuous integration builds itself!</p>
+<p>What more, we have <a href="https://jaspervdj.be/hakyll/" title="Hakyll">Hakyll</a>, that supports writing blogs in markdown, and then converting that to HTML pages. So: Hakyll + Github = master-blaster!</p>
+<p>How do we get Hakyll play well together with github?</p>
+<p>The best place to start from is of course <a href="https://jaspervdj.be/hakyll/tutorials/github-pages-tutorial.html" title="Github pages">here</a> - there is only a slight addition here. But here I try to consolidate all aspects of installing and using Hakyll with github.</p>
+<h1 id="so-what-is-different-in-this-article">So, what is different in this article?</h1>
+<p>Well, this is something that worked for me. And the only change I did was to not to follow <a href="https://jaspervdj.be/hakyll/tutorials/github-pages-tutorial.html" title="Github pages">the above</a> article in its entirety - and just replaced the <code>stack new myblog hakyll-template</code> with the instructions in the installation.</p>
+<p>I did this, because stack was pulling down the nightly build with the template way. I decided to use the native hakyll way for initing the hakyll site: using <code>hakyll-init my-site</code>, and then initialse git for use with github-pages.</p>
+<h1 id="the-basic-idea">The basic idea</h1>
+<p>The basic idea of how you would maintain your site is by having two branches: one called “develop”, where you will have your markdown files for posts (and of course, the other Hakyll files and your build-output html files). Your master branch does not need your markdown files, and will only contain the posts in html form - which is what github pages require.</p>
+<h1 id="installation">Installation</h1>
+<p>Installation instructions are <a href="https://jaspervdj.be/hakyll/tutorials/01-installation.html" title="Installation">here</a>, and they worked perfectly for me. So I just repeat the steps here to keep this complete (I just changed the “my-site” to “higblog” - but this does not make a difference for you if you want to keep it as “my-site”):</p>
+<pre><code>$ stack install hakyll    # Install hakyll
+$ hakyll-init higblog     # Build example site, creates also site.hs that holds configuration of the site
+$ cd higblog
+$ stack init              # Creates stack.yaml file based on higblog.cabal
+$ stack build             # Build the site 
+$ # Dont build the posts yet...</code></pre>
+<h1 id="integrating-with-github-pages">Integrating with Github pages</h1>
+<p>I don’t repeat everything that is mentioned <a href="https://jaspervdj.be/hakyll/tutorials/github-pages-tutorial.html" title="Github pages">here</a>. I cannot do a better job than that.</p>
+<p>Just follow all instructions here, until actually creating a stack project in the local-setup using <code>stack new</code>. You do not need this step, because, as a part of the installation above, you have already created a site.</p>
+<p>Then, create a .gitignore file as follows:</p>
+<pre><code># Created by https://www.gitignore.io/api/haskell
+
+### Haskell ###
+dist
+cabal-dev
+*.o
+*.hi
+*.chi
+*.chs.h
+*.dyn_o
+*.dyn_hi
+.hpc
+.hsenv
+.cabal-sandbox/
+cabal.sandbox.config
+*.prof
+*.aux
+*.hp
+.vscode/
+.stack-work/
+_cache/
+_site/</code></pre>
+<p>Finally, initialise git and add the files to your local git repository:</p>
+<pre><code>git init
+# create new branch called develop and switch to it.
+git checkout -b develop
+# track all the source files for our blog.
+git add .
+# make our first commit
+git commit -m &quot;initial commit.&quot;
+# and add the GitHub repository as a remote.
+git remote add origin &lt;URL to your GitHub pages repository&gt;</code></pre>
+<p>Deploying your site github, again, modified from <a href="https://jaspervdj.be/hakyll/tutorials/github-pages-tutorial.html" title="Github pages">the same place</a> to fit this workflow. Before deploying, make sure we are in the <code>develop</code> branch. If not, do this to get there:</p>
+<pre><code># Temporarily store uncommited changes
+git stash
+
+# Verify correct branch
+git checkout develop</code></pre>
+<p>If you are already in the <code>develop</code> branch, commit your changes, and build the site:</p>
+<pre><code>git add -A
+git commit -m &lt;commit message&gt;
+
+# Build new files
+stack exec site clean
+stack exec site build
+
+# Get all files from github
+# This step is important to make sure that we get merge conflicts that we can resolve
+# before we push our changes back to github.
+git fetch --all
+
+# Create a master branch for pushing
+git checkout -b master
+
+# Overwrite existing files with new files
+cp -a _site/. .
+
+# Commit
+git add -A
+git commit -m &quot;Publish&quot;
+
+# Push changes to github
+git push -u origin master
+
+# Restoration
+git checkout develop
+git branch -D master</code></pre>
+<p>In case you had stashed uncommitted changes, pop those back.</p>
+<pre><code>git stash pop</code></pre>
+<p>Enjoy Hakyll with GitHub!</p>
+<h1 id="bonus-hakyll-with-equations--">Bonus: Hakyll with equations :-)</h1>
+<p>Here’s the simplest of all:</p>
+<p>In the seventeenth century, Fermat conjectured that if <span class="math inline"><em>n</em> &gt; 2</span>, then there are no integers <span class="math inline"><em>x</em></span>, <span class="math inline"><em>y</em></span>, <span class="math inline"><em>z</em></span> for which: <strong><em><br /><span class="math display"><em>x</em><sup><em>n</em></sup> + <em>y</em><sup><em>n</em></sup> = <em>z</em><sup><em>n</em></sup></span><br /></em></strong></p>
+<p>This was proved in 1994 by Andrew Wiles.</p>
+<p>The sequence <span class="math inline">(<em>x</em><sub><em>n</em></sub>)</span> defined by: <strong><em><br /><span class="math display"><em>x</em><sub>1</sub> = 1, <em>x</em><sub>2</sub> = 1, <em>x</em><sub><em>n</em></sub> = <em>x</em><sub><em>n</em> − 1</sub> + <em>x</em><sub><em>n</em> − 2</sub>  (<em>n</em> &gt; 2)</span><br /></em></strong></p>
+<p>is called the Fibonacci sequence.</p>
+    </section>
+</article>
+
+        </main>
+
+        <footer>
+            Site proudly generated by
+            <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+        </footer>
+    </body>
+</html>
