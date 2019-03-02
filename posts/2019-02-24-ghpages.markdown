@@ -116,6 +116,9 @@ git push -u origin master
 # Restoration
 git checkout develop
 git branch -D master
+```
+In case you had stashed uncommitted changes, pop those back.
+```
 git stash pop
 ```
 
