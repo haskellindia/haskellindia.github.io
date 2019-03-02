@@ -1,17 +1,17 @@
 ---
 title: About
 ---
-Nullam imperdiet sodales orci vitae molestie. Nunc quam orci, pharetra a
-rhoncus vitae, eleifend id felis. Suspendisse potenti. Etiam vitae urna orci.
-Quisque pellentesque dignissim felis, egestas tempus urna luctus vitae. In hac
-habitasse platea dictumst. Morbi fringilla mattis odio, et mattis tellus
-accumsan vitae.
 
-1. Amamus Unicode 碁
-2. Interdum nex magna.
+Haskell India Group is a telegram-only, India-focused group for all using, or wanting to use the functional programming language - Haskell. Students, professionals, hobbyists, entrepreneurs & companies - all are welcome! 
 
-Vivamus eget mauris sit amet nulla laoreet lobortis. Nulla in diam elementum
-risus convallis commodo. Cras vehicula varius dui vitae facilisis. Proin
-elementum libero eget leo aliquet quis euismod orci vestibulum. Duis rhoncus
-lorem consequat tellus vestibulum aliquam. Quisque orci orci, malesuada porta
-blandit et, interdum nec magna.
+The group was created on **17.May.2018**, and announced publicly exactly a day later:
+ 
+.. image:: /images/hig-announcement.png 
+   :width: 300px 
+   :target: /images/hig-announcement.png
+
+This blog site serves to complement the telegram channel, with information on what we do, some articles of usefulness in general for the Haskell community.
+
+The group also plans to run some opensource projects in github. Please feel to `head there`_ for checking out on that (this blog is also hosted there).
+
+.. _head there: https://github.com/orgs/haskellindia

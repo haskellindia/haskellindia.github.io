@@ -1,141 +1,115 @@
+@import "base.css";
+
+/* fonts */
+@import url(http://fonts.googleapis.com/css?family=Ubuntu);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
 html {
-  font-size: 62.5%;
+     /* to allow the #footer to be properly positioned
+    at the bottom, even when #content is longer than
+    the viewport high */
+    min-height: 100%;
+    position: relative;
 }
 
 body {
-  font-size: 1.6rem;
-  color: #000;
+    color: black;
+    font-size: 16px;
+    margin: 40px auto 0px auto;
 }
 
 header {
-  border-bottom: 0.2rem solid #000;
+    margin-bottom: 0px;
+    padding: 50px;
+    background: linear-gradient(to right,#19111f 0%,#2c1e37 100%);
 }
 
-nav {
-  text-align: right;
+div.logo a {
+    color: #FFFFFF;
+    float: left;
+    font-family: Ubuntu, 'Open Sans', sans-serif;
+    font-size: 28px;
+    font-weight: bold;
+    text-decoration: none;
 }
 
-nav a {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: black;
+header nav {
+    text-align: right;
+}
+
+header nav a {
+    color: #d1cddc!important;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: 12px;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+header nav a:hover{
+  color: #FFFFFF;
+}
+
+main {
+  margin-left: 50px;
+  margin-right: 50px;
+  margin-bottom: 5.5rem; /* footer-height + 1.5rem */
+}
+
+main h1{
+  color: #6e618d;
+  font-size: 36px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+main, /* this line for archives page */
+main p{
+    color: #333333;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 15px;
+}
+
+main a{
+  color: #428bca;
   text-decoration: none;
-  text-transform: uppercase;
 }
 
 footer {
-  margin-top: 3rem;
-  padding: 1.2rem 0;
-  border-top: 0.2rem solid #000;
-  font-size: 1.2rem;
-  color: #555;
+    color: #999999;
+    font-size: 12px;
+    text-align: center;
+    height: 4em;
+    background-color: #323232;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    overflow: hidden;
+    padding-top: 1em;
+    font-family: 'Open Sans', sans-serif;
 }
 
-h1 {
-  font-size: 2.4rem;
-}
-
-h2 {
-  font-size: 2rem;
-}
-
-article .header {
-  font-size: 1.4rem;
-  font-style: italic;
-  color: #555;
-}
-
-.logo a {
+footer a {
+  color: #ffffff;
   font-weight: bold;
-  color: #000;
   text-decoration: none;
 }
 
-@media (max-width: 319px) {
-  body {
-    width: 90%;
-    margin: 0;
-    padding: 0 5%;
-  }
-  header {
-    margin: 4.2rem 0;
-  }
-  nav {
-    margin: 0 auto 3rem;
-    text-align: center;
-  }
-  footer {
-    text-align: center;
-  }
-  .logo {
-    text-align: center;
-    margin: 1rem auto 3rem;
-  }
-  .logo a {
-    font-size: 2.4rem;
-  }
-  nav a {
+code {
+    background-color: rgb(250, 250, 250);
+    border: 1px solid rgb(200, 200, 200);
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+pre code {
     display: block;
-    line-height: 1.6;
-  }
+    padding: 8px;
+    margin-bottom: 2em;
 }
 
-@media (min-width: 320px) {
-  body {
-    width: 90%;
-    margin: 0;
-    padding: 0 5%;
-  }
-  header {
-    margin: 4.2rem 0;
-  }
-  nav {
-    margin: 0 auto 3rem;
-    text-align: center;
-  }
-  footer {
-    text-align: center;
-  }
-  .logo {
-    text-align: center;
-    margin: 1rem auto 3rem;
-  }
-  .logo a {
-    font-size: 2.4rem;
-  }
-  nav a {
-    display: inline;
-    margin: 0 0.6rem;
-  }
-}
-
-@media (min-width: 640px) {
-  body {
-    width: 60rem;
-    margin: 0 auto;
-    padding: 0;
-  }
-  header {
-    margin: 0 0 3rem;
-    padding: 1.2rem 0;
-  }
-  nav {
-    margin: 0;
-    text-align: right;
-  }
-  nav a {
-    margin: 0 0 0 1.2rem;
-    display: inline;
-  }
-  footer {
-    text-align: right;
-  }
-  .logo {
-    margin: 0;
-    text-align: left;
-  }
-  .logo a {
-    float: left;
-    font-size: 1.8rem;
-  }
+section.header {
+    color: #555;
+    font-size: 14px;
+    font-style: italic;
 }

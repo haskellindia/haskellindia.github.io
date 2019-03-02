@@ -1,0 +1,144 @@
+---
+title: Using Hakyll with Github
+author: Arvind Devarajan
+---
+# Premise
+Using github pages for blogs gives an interesting perspective: not only is that collaborative in nature (but not the only way), but also that it allows keeping your documentation / wiki along with your source code.
+
+And, this is what that makes github pages different from, lets say, wiki: with sufficiently developed tools (for example, integrating document generating tools such as [doxygen][3], [sandcastle][4], etc.), there is also a possibility to use your blog as an upto-date synced documentation of your source code. This is possible because the blog is a part of your repo, and source-code documentation can be generated, say, during your continuous integration builds itself!
+
+What more, we have [Hakyll][5], that supports writing blogs in markdown, and then converting that to HTML pages. So: Hakyll + Github = master-blaster!
+
+How do we get Hakyll play well together with github?
+
+The best place to start from is of course [here][2] - there is only a slight addition here. But here I try to consolidate all aspects of installing and using Hakyll with github.
+
+# So, what is different in this article?
+Well, this is something that worked for me. And the only change I did was to not to follow [the above][2] article in its entirety - and just replaced the `stack new myblog hakyll-template` with the instructions in the installation.
+
+I did this, because stack was pulling down the nightly build with the template way. I decided to use the native hakyll way for initing the hakyll site: using `hakyll-init my-site`, and then initialse git for use with github-pages. 
+
+# The basic idea
+The basic idea of how you would maintain your site is by having two branches: one called "develop", where you will have your markdown files for posts (and of course, the other Hakyll files and your build-output html files). Your master branch does not need your markdown files, and will only contain the posts in html form - which is what github pages require.
+
+# Installation
+Installation instructions are [here][1], and they worked perfectly for me. So I just repeat the steps here to keep this complete (I just changed the "my-site" to "higblog" - but this does not make a difference for you if you want to keep it as "my-site"):
+
+    $ stack install hakyll    # Install hakyll
+    $ hakyll-init higblog     # Build example site, creates also site.hs that holds configuration of the site
+    $ cd higblog
+    $ stack init              # Creates stack.yaml file based on higblog.cabal
+    $ stack build             # Build the site 
+    $ # Dont build the posts yet...
+
+# Integrating with Github pages
+I don't repeat everything that is mentioned [here][2]. I cannot do a better job than that.
+
+Just follow all instructions here, until actually creating a stack project in the local-setup using ```stack new```. You do not need this step, because, as a part of the installation above, you have already created a site.
+
+Then, create a .gitignore file as follows:
+
+```
+# Created by https://www.gitignore.io/api/haskell
+
+### Haskell ###
+dist
+cabal-dev
+*.o
+*.hi
+*.chi
+*.chs.h
+*.dyn_o
+*.dyn_hi
+.hpc
+.hsenv
+.cabal-sandbox/
+cabal.sandbox.config
+*.prof
+*.aux
+*.hp
+.vscode/
+.stack-work/
+_cache/
+_site/
+```
+
+Finally, initialise git and add the files to your local git repository:
+
+```
+git init
+# create new branch called develop and switch to it.
+git checkout -b develop
+# track all the source files for our blog.
+git add .
+# make our first commit
+git commit -m "initial commit."
+# and add the GitHub repository as a remote.
+git remote add origin <URL to your GitHub pages repository>
+```
+
+Deploying your site github, again, modified from [the same place][2] to fit this workflow. Before deploying, make sure we are in the `develop` branch. If not, do this to get there:
+```
+# Temporarily store uncommited changes
+git stash
+
+# Verify correct branch
+git checkout develop
+```
+If you are already in the `develop` branch, commit your changes, and build the site:
+
+```
+git add -A
+git commit -m <commit message>
+
+# Build new files
+stack exec site clean
+stack exec site build
+
+# Get all files from github
+# This step is important to make sure that we get merge conflicts that we can resolve
+# before we push our changes back to github.
+git fetch --all
+
+# Create a master branch for pushing
+git checkout -b master
+
+# Overwrite existing files with new files
+cp -a _site/. .
+
+# Commit
+git add -A
+git commit -m "Publish"
+
+# Push changes to github
+git push -u origin master
+
+# Restoration
+git checkout develop
+git branch -D master
+git stash pop
+```
+
+Enjoy Hakyll with GitHub!
+
+# Bonus: Hakyll with equations :-)
+Here's the simplest of all:
+
+In the seventeenth century, Fermat conjectured that if $n>2$, then
+there are no integers $x$, $y$, $z$ for which:
+***$$ x^n+y^n=z^n $$***
+
+This was proved in 1994 by Andrew Wiles.
+
+The sequence $(x_n)$ defined by:
+***$$
+x_1=1,\quad x_2=1,\quad x_n=x_{n-1}+x_{n-2}\;\;(n>2)
+$$***
+
+is called the Fibonacci sequence.
+
+[1]: https://jaspervdj.be/hakyll/tutorials/01-installation.html "Installation"
+[2]: https://jaspervdj.be/hakyll/tutorials/github-pages-tutorial.html "Github pages"
+[3]: http://www.doxygen.nl/ "Doxygen"
+[4]: https://github.com/EWSoftware/SHFB "Sandcastle"
+[5]: https://jaspervdj.be/hakyll/ "Hakyll"
